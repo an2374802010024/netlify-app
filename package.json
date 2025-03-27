@@ -1,0 +1,17 @@
+{
+  "name": "phonestore-php",
+  "version": "1.0.0",
+  "description": "PhoneStore PHP Admin Panel",
+  "main": "index.php",
+  "scripts": {
+    "build": "echo 'No build step required for PHP application'",
+    "start": "php -S 0.0.0.0:8888"
+  },
+  "keywords": [
+    "php",
+    "ecommerce",
+    "admin"
+  ],
+  "author": "",
+  "license": "MIT"
+}

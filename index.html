@@ -1,17 +1,68 @@
 <!DOCTYPE html>
-<html lang=" en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PhoneStore</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>WELCOME TO MY WEBSAITE</h1>
-        <p>Xin chao ban da den voi trang web cua toi</p>
-    </div>
-</body>
+    <header>
+        <div class="logo">
+            <h1>PhoneStore</h1>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="login.html" id="admin-link">Login</a></li>
+            </ul>
+        </nav>
+    </header>
 
+    <main>
+        <section id="hero">
+            <h1>Welcome to PhoneStore</h1>
+            <p>Discover the Latest Smartphones</p>
+        </section>
+        <section id="featured-products">
+            <h2>Featured Products</h2>
+            <div class="product-grid" id="productGrid"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="current-year"></span> PhoneStore. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Check if user is logged in and update admin link
+        console.log('Checking authentication status...');
+
+        fetch('/.netlify/functions/php-handler?path=/auth-check')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Auth check response:', data);
+
+                if (data.isLoggedIn) {
+                    console.log('User is logged in as admin');
+                    const adminLink = document.getElementById('admin-link');
+                    adminLink.textContent = 'Admin Panel';
+                    adminLink.href = 'admin.html';
+                } else {
+                    console.log('User is not logged in');
+                }
+            })
+            .catch(error => {
+                console.error('Auth check error:', error);
+            });
+    </script>
+    <script src="script.js"></script>
+</body>
 </html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Test - PhoneStore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .button-group {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+        .credentials {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e9f7ef;
+            border: 1px solid #27ae60;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Authentication Test Page</h1>
+
+    <div class="credentials">
+        <h3>Test Credentials:</h3>
+        <p><strong>Username:</strong> admin</p>
+        <p><strong>Password:</strong> admin123</p>
+    </div>
+
+    <div class="button-group">
+        <button id="check-auth">Check Authentication</button>
+        <button id="manual-login">Login Manually</button>
+        <button id="logout">Logout</button>
+        <button id="clear-output">Clear Output</button>
+    </div>
+
+    <div>
+        <a href="index.html">Back to Store</a> |
+        <a href="login.html">Go to Login Page</a> |
+        <a href="admin.html">Go to Admin Panel</a>
+    </div>
+
+    <pre id="output">Output will display here...</pre>
+
+    <script>
+        const output = document.getElementById('output');
+
+        // Function to log output
+        function log(message) {
+            const timestamp = new Date().toISOString();
+            output.textContent += `\n[${timestamp}] ${message}`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Check authentication status
+        document.getElementById('check-auth').addEventListener('click', function() {
+            log('Checking authentication status...');
+
+            fetch('/.netlify/functions/php-handler?path=/auth-check')
+                .then(response => {
+                    log(`Response status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    log(`Response data: ${JSON.stringify(data, null, 2)}`);
+                })
+                .catch(error => {
+                    log(`Error: ${error.message}`);
+                });
+        });
+
+        // Manual login
+        document.getElementById('manual-login').addEventListener('click', function() {
+            log('Attempting manual login with admin/admin123...');
+
+            fetch('/.netlify/functions/php-handler?path=/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: 'admin',
+                    password: 'admin123'
+                })
+            })
+            .then(response => {
+                log(`Response status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                log(`Response data: ${JSON.stringify(data, null, 2)}`);
+                if (data.success) {
+                    log('Login successful! You can now go to the admin panel.');
+                } else {
+                    log('Login failed.');
+                }
+            })
+            .catch(error => {
+                log(`Error: ${error.message}`);
+            });
+        });
+
+        // Logout
+        document.getElementById('logout').addEventListener('click', function() {
+            log('Logging out...');
+
+            fetch('/.netlify/functions/php-handler?path=/logout')
+                .then(response => {
+                    log(`Response status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    log(`Response data: ${JSON.stringify(data, null, 2)}`);
+                    if (data.success) {
+                        log('Logout successful!');
+                    }
+                })
+                .catch(error => {
+                    log(`Error: ${error.message}`);
+                });
+        });
+
+        // Clear output
+        document.getElementById('clear-output').addEventListener('click', function() {
+            output.textContent = 'Output cleared.';
+        });
+
+        // Initial check
+        log('Page loaded. Use the buttons above to test authentication functionality.');
+    </script>
+</body>
+</html>
